@@ -202,7 +202,7 @@ def run(
         t2 = time_sync()
         dt[0] += t2 - t1
 
-        yolo_path = '../../lib/libmfmodeltesterv2.so'
+        yolo_path = '/usr/lib/libmfmodeltesterv2.so'
         mf_yolo = MFTesterC.MFTesterC(yolo_path)
         print('load library finished!')
         yaml_path = '/home/kylin/work/dataset_yolov5/CCSFF_yolov5#N1#640_sparseX16_int8_single_core_fase_b2_mode_false_context1_batch_parallel_false_0/CCSFF_yolov5#N1#640_sparseX16_int8_single_core_fase_b2_mode_false_context1_batch_parallel_false_0_7a6a82d/chip_runtime.yaml'

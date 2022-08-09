@@ -215,8 +215,8 @@ def run(
 
         im = torch.randn(1,640,640,3)
         im = im.numpy().view(dtype=np.uint8)
-        mf_yolo.append_param(im, im.int8)
-        mf_yolo.inference(myout, myout.float16)
+        mf_yolo.append_param(im, np.int8)
+        mf_yolo.inference(myout, np.float16)
         print(myout)
 
         dt[1] += time_sync() - t2

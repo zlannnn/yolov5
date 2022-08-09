@@ -216,7 +216,7 @@ def run(
         #im = im.permute(0,2,3,1
         print(im.shape)
         im = im.numpy()
-        im = np.transpose(im,(0,2,3,1)
+        im = np.transpose(im,(0,2,3,1))
         print(im.shape)       
         im = im.view(dtype=np.uint8)
         mf_yolo.append_param(im, im.nbytes)

@@ -1,5 +1,6 @@
 import MFTesterC
 import numpy as np
+import torch
 
 yolo_path = '/home/kylin/deploy/mfmodeltesterv2/install/kylin/lib/libmfmodeltesterv2.so'
 mf_yolo = MFTesterC.MFTesterC(yolo_path)

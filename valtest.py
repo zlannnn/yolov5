@@ -223,8 +223,8 @@ def run(
         dt[1] += time_sync() - t2
         #import pdb; pdb.set_trace()
         # Loss
-        if compute_loss:
-            loss += compute_loss([x.float() for x in train_out], targets)[1]  # box, obj, cls
+        #if compute_loss:
+         #   loss += compute_loss([x.float() for x in train_out], targets)[1]  # box, obj, cls
 
         # NMS
         targets[:, 2:] *= torch.tensor((width, height, width, height), device=device)  # to pixels

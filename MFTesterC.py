@@ -23,3 +23,7 @@ class MFTesterC:
                                        c_int)
 
         self.destroy = wrap_function(self.mfmodeltesterv2, 'model_tester_destroy', None, None)
+        
+        self.core = 1
+        
+        

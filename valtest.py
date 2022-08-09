@@ -33,6 +33,7 @@ ROOT = FILE.parents[0]  # YOLOv5 root directory
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
+os.environ['LD_LIBRARY_PATH']='/usr/local/lib64'
 
 from models.common import DetectMultiBackend
 from utils.callbacks import Callbacks
@@ -206,7 +207,12 @@ def run(
         mf_yolo = MFTesterC.MFTesterC(yolo_path)
         print('load library finished!')
         yaml_path = '/home/kylin/work/dataset_yolov5/CCSFF_yolov5#N1#640_sparseX16_int8_single_core_fase_b2_mode_false_context1_batch_parallel_false_0/CCSFF_yolov5#N1#640_sparseX16_int8_single_core_fase_b2_mode_false_context1_batch_parallel_false_0_7a6a82d/chip_runtime.yaml'
-        ret = mf_yolo.init(yaml_path.encode('utf-8'), device_id)
+        ret = mf_yolo.init(yaml_path.encode('utf-8'), 0)
+        
+        im = im.numpy().view(dtype=np.uint8)
+        mf_yolo.append_param(im, im.nbytes)
+        out = mf_yolo.inference(im, im.nbytes)
+        import pdb; pdb.set_trace()
 
         # Inference
         out, train_out = mf_yolo(im) #model(im) if training else model(im, augment=augment, val=True)  # inference, loss outputs

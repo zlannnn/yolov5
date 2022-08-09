@@ -71,7 +71,7 @@ class MFTesterC:
         
         
 class YoloRuntime(MFTesterC):
-        def __init__(self, mfmodeltesterv2_lib_path=None):
+    def __init__(self, mfmodeltesterv2_lib_path=None):
         super(YoloRuntime, self).__init__(mfmodeltesterv2_lib_path=mfmodeltesterv2_lib_path)
         
     def preprocess(self, data):

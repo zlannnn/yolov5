@@ -207,6 +207,7 @@ def run(
         im = im.half() if half else im.float()  # uint8 to fp16/32
         im /= 255  # 0 - 255 to 0.0 - 1.0
         nb, _, height, width = im.shape  # batch size, channels, height, width
+        print(im.shape)
         t2 = time_sync()
         dt[0] += t2 - t1
         # Inference

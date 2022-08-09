@@ -211,11 +211,13 @@ def run(
         
         im = im.numpy().view(dtype=np.uint8)
         mf_yolo.append_param(im, im.nbytes)
-        out = mf_yolo.inference(im, im.nbytes)
-        import pdb; pdb.set_trace()
+        myout = mf_yolo.inference(im, im.nbytes)
+        print(myout)
+        #import pdb; pdb.set_trace()
 
         # Inference
-        out, train_out = mf_yolo(im) #model(im) if training else model(im, augment=augment, val=True)  # inference, loss outputs
+        out, train_out = model(im) if training else model(im, augment=augment, val=True)  # inference, loss outputs
+        import pdb; pdb.set_trace()
         dt[1] += time_sync() - t2
 
         # Loss

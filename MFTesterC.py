@@ -48,6 +48,16 @@ class MFTesterC:
         ret = self.init(model_path.encode('utf-8'), device_id)
         #self.get_output_info(model_path)
         
+    def get_output_info(self, yaml_path):
+        dtype_map = {
+            "bf16": np.uint16,
+            "int8": np.int8
+            }
+        data = yaml.safe_load(open(yaml_path, "r"))
+        self.output_shape = data["model_output"][0]["shape"]
+        self.dtype = dtype_map[data["model_output"][0]["dtype"]]
+
+        
     def preprocess(self, *args, **kwargs):
         raise NotImplementedError
     

@@ -1,4 +1,4 @@
-# YOLOv5 🚀 by Ultralytics, GPL-3.0 license
+# YOLOv5 馃殌 by Ultralytics, GPL-3.0 license
 """
 Validate a trained YOLOv5 model accuracy on a custom dataset
 
@@ -204,7 +204,7 @@ def run(
         if cuda:
             im = im.to(device, non_blocking=True)
             targets = targets.to(device)
-        im = im.half() if half else im.float()  # uint8 to fp16/32
+        im = im.half() # if half else im.float()  # uint8 to fp16/32
         im /= 255  # 0 - 255 to 0.0 - 1.0
         nb, _, height, width = im.shape  # batch size, channels, height, width
        # print(im.shape)
@@ -213,20 +213,27 @@ def run(
         # Inference
         #out, train_out = model(im) if training else model(im, augment=augment, val=True)  # inference, loss outputs
         #import pdb; pdb.set_trace()
-        im = im.permute(0,2,3,1).contiguous()
-        print(im.shape)
         
-        im = torch.randn(1,640,640,3)
-        im = im.numpy().view(dtype=np.uint8)
-        print(im.shape)
-        mf_yolo.append_param(im, im.nbytes)
+        
+        output_max = 0.996337890625
+        quant_scale = 127 / output_max
+        
+         
+        
+        temp = im
+        temp = temp.permute(0,2,3,1).contiguous()
+        print(temp.shape)
+        
+        #im = torch.randn(1,640,640,3)
+        temp = temp.numpy().view(dtype=np.uint8)
+        print(temp.shape)
+        mf_yolo.append_param(temp, temp.nbytes)
         mf_yolo.inference(myout, myout.nbytes)
-        print(myout)
+        #print(myout)
         #import pdb; pdb.set_trace()
-        out = torch.tensor(myout)
-        out = out.squeeze(0)
-        out = out.squeeze(0)
-        out = out.squeeze(0)
+        out = np.expand_dims(myout.squeeze()[:,:9], axis=0)
+        out = torch.tensor(out)
+        print(out)
         out = out.to(device)
 
         dt[1] += time_sync() - t2
@@ -299,7 +306,7 @@ def run(
     pf = '%20s' + '%11i' * 2 + '%11.3g' * 4  # print format
     LOGGER.info(pf % ('all', seen, nt.sum(), mp, mr, map50, map))
     if nt.sum() == 0:
-        LOGGER.warning(f'WARNING: no labels found in {task} set, can not compute metrics without labels ⚠️')
+        LOGGER.warning(f'WARNING: no labels found in {task} set, can not compute metrics without labels 鈿狅笍')
 
     # Print results per class
     if (verbose or (nc < 50 and not training)) and nc > 1 and len(stats):
@@ -390,7 +397,7 @@ def main(opt):
 
     if opt.task in ('train', 'val', 'test'):  # run normally
         if opt.conf_thres > 0.001:  # https://github.com/ultralytics/yolov5/issues/1466
-            LOGGER.info(f'WARNING: confidence threshold {opt.conf_thres} > 0.001 produces invalid results ⚠️')
+            LOGGER.info(f'WARNING: confidence threshold {opt.conf_thres} > 0.001 produces invalid results 鈿狅笍')
         run(**vars(opt))
 
     else:

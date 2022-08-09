@@ -75,7 +75,7 @@ class YoloRuntime(MFTesterC):
         super(YoloRuntime, self).__init__(mfmodeltesterv2_lib_path=mfmodeltesterv2_lib_path)
         
     def preprocess(self, data):
-        data = torch.round(torch.clip(im.float(), -128, 127).float()).int()
+        data = torch.round(torch.clip(data.float(), -128, 127).float()).int()
         data = data.permute(0,2,3,1).contiguous()
         data = data.numpy().view(dtype=np.uint8)
         return data

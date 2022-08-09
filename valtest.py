@@ -213,9 +213,12 @@ def run(
         # Inference
         #out, train_out = model(im) if training else model(im, augment=augment, val=True)  # inference, loss outputs
 
-        im = im.permute(0,2,3,1)
+        #im = im.permute(0,2,3,1)
         print(im.shape)
-        im = im.numpy().view(dtype=np.uint8)
+        im = im.numpy()
+        im = np.transpose(im,(0,2,3,1)
+        print(im.shape)       
+        im = im.view(dtype=np.uint8)
         mf_yolo.append_param(im, im.nbytes)
         mf_yolo.inference(myout, im.nbytes)
         print(myout)

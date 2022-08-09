@@ -208,7 +208,7 @@ def run(
         im /= 255  # 0 - 255 to 0.0 - 1.0
         nb, _, height, width = im.shape  # batch size, channels, height, width
        # print(im.shape)
-        t2 = time_sync()
+        t2 = time_sync() 
         dt[0] += t2 - t1
         # Inference
         #out, train_out = model(im) if training else model(im, augment=augment, val=True)  # inference, loss outputs

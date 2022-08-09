@@ -46,7 +46,7 @@ class MFTesterC:
     
     def load_model(self, model_path, device_id=0):
         ret = self.init(model_path.encode('utf-8'), device_id)
-        self.get_output_info(model_path)
+        #self.get_output_info(model_path)
         
     def preprocess(self, *args, **kwargs):
         raise NotImplementedError

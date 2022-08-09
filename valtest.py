@@ -212,12 +212,10 @@ def run(
         dt[0] += t2 - t1
         # Inference
         #out, train_out = model(im) if training else model(im, augment=augment, val=True)  # inference, loss outputs
-        import pdb; pdb.set_trace()
-        #im = im.permute(0,2,3,1
+        #import pdb; pdb.set_trace()
+        im = im.permute(0,2,3,1).contiguous()
         print(im.shape)
-        im = im.numpy()
-        #im = np.ascontiguousarray(im, dtype=np.uint8)     
-        im = im.view(dtype=np.uint8)
+        im = im.numpy().view(dtype=np.uint8)
         print(im.shape)
         mf_yolo.append_param(im, im.nbytes)
         mf_yolo.inference(myout, im.nbytes)

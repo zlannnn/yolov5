@@ -219,9 +219,9 @@ def run(
         mf_yolo.inference(myout, im.nbytes)
         print(myout)
         out = torch.tensor(myout).to(device)
-        out = out.ssqueeze(0)
-        out = out.ssqueeze(0)
-        out = out.ssqueeze(0)
+        out = out.squeeze(0)
+        out = out.squeeze(0)
+        out = out.squeeze(0)
 
         dt[1] += time_sync() - t2
         #import pdb; pdb.set_trace()

@@ -23,7 +23,7 @@ import json
 import os
 import sys
 from pathlib import Path
-import MFTesterC
+from MFTesterC import YoloRuntime
 import numpy as np
 import torch
 from tqdm import tqdm
@@ -192,12 +192,14 @@ def run(
     callbacks.run('on_val_start')
     pbar = tqdm(dataloader, desc=s, bar_format='{l_bar}{bar:10}{r_bar}{bar:-10b}')  # progress bar
     
-    yolo_path = '/home/kylin/deploy/mfmodeltesterv2/install/kylin/lib/libmfmodeltesterv2.so'
-    mf_yolo = MFTesterC.MFTesterC(yolo_path)
+    lib_path = '/home/kylin/deploy/mfmodeltesterv2/install/kylin/lib/libmfmodeltesterv2.so'
+    mf_yolo = YoloRuntime(mfmodeltesterv2_lib_path=lib_path)
     print('load library finished!')
-    yaml_path = '/home/kylin/work/dataset_yolov5/CCSFF_yolov5#N1#640_sparseX16_int8_single_core_fase_b2_mode_false_context1_batch_parallel_false_0/CCSFF_yolov5#N1#640_sparseX16_int8_single_core_fase_b2_mode_false_context1_batch_parallel_false_0_7a6a82d/chip_runtime.yaml'
-    ret = mf_yolo.init(yaml_path.encode('utf-8'), 0)
+    model_path = '/home/kylin/work/dataset_yolov5/CCSFF_yolov5#N1#640_sparseX16_int8_single_core_fase_b2_mode_false_context1_batch_parallel_false_0/CCSFF_yolov5#N1#640_sparseX16_int8_single_core_fase_b2_mode_false_context1_batch_parallel_false_0_7a6a82d/chip_runtime.yaml'
+    mf_yolo.load_model(model_path=model_path)
+    mf_yolo.get_output_info(yaml_path=model_path)
     myout = np.ones([1,1,1,1,25200,32], dtype=np.uint8)
+    
     for batch_i, (im, targets, paths, shapes) in enumerate(pbar):
         callbacks.run('on_val_batch_start')
         t1 = time_sync()
@@ -214,25 +216,12 @@ def run(
         #out, train_out = model(im) if training else model(im, augment=augment, val=True)  # inference, loss outputs
         #import pdb; pdb.set_trace()
         
-        
-        output_max = 0.996337890625
-        quant_scale = 127 / output_max
-        temp = torch.round(torch.clip(im.float(), -128, 127).float()).int()
-
-        temp = temp.permute(0,2,3,1).contiguous()
-        print(temp.shape)
-        
-        #im = torch.randn(1,640,640,3)
-        temp = temp.numpy().view(dtype=np.uint8)
-        print(temp.shape)
-        mf_yolo.append_param(temp, temp.nbytes)
-        mf_yolo.inference(myout, myout.nbytes)
-        #print(myout)
-        #import pdb; pdb.set_trace()
-        out = np.expand_dims(myout.squeeze()[:,:9], axis=0)
-        out = torch.from_numpy(out).float()
-        print(out)
-        out = out.to(device)
+        data = mf_yolo.preprocess(im)
+        print(im.shape)
+        data = mf_yolo.moffett_inference(data)
+        data = mf_yolo.postprocess(data)
+        print(data)
+        out = data.to(device)
 
         dt[1] += time_sync() - t2
         #import pdb; pdb.set_trace()

@@ -1,4 +1,4 @@
-import MFTesterC import YoloRuntime
+from MFTesterC import YoloRuntime
 import numpy as np
 import torch
 

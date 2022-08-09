@@ -169,7 +169,7 @@ def run(
                               f'classes). Pass correct combination of --weights and --data that are trained together.'
         model.warmup(imgsz=(1 if pt else batch_size, 3, imgsz, imgsz))  # warmup
         pad = 0.0 if task in ('speed', 'benchmark') else 0.5
-        rect = False if task == 'benchmark' else pt  # square inference for benchmarks
+        rect = False # if task == 'benchmark' else pt  # square inference for benchmarks
         task = task if task in ('train', 'val', 'test') else 'val'  # path to train/val/test images
         dataloader = create_dataloader(data[task],
                                        imgsz,
@@ -207,13 +207,14 @@ def run(
         im = im.half() if half else im.float()  # uint8 to fp16/32
         im /= 255  # 0 - 255 to 0.0 - 1.0
         nb, _, height, width = im.shape  # batch size, channels, height, width
-        print(im.shape)
+       # print(im.shape)
         t2 = time_sync()
         dt[0] += t2 - t1
         # Inference
         #out, train_out = model(im) if training else model(im, augment=augment, val=True)  # inference, loss outputs
 
-        im = torch.randn(1,640,640,3)
+        im = im.permute(0,2,3,1)
+        print(im.shape)
         im = im.numpy().view(dtype=np.uint8)
         mf_yolo.append_param(im, im.nbytes)
         mf_yolo.inference(myout, im.nbytes)

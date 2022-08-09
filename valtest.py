@@ -217,9 +217,6 @@ def run(
         
         output_max = 0.996337890625
         quant_scale = 127 / output_max
-        
-         
-        
         temp = im
         temp = temp.permute(0,2,3,1).contiguous()
         print(temp.shape)
@@ -232,7 +229,7 @@ def run(
         #print(myout)
         #import pdb; pdb.set_trace()
         out = np.expand_dims(myout.squeeze()[:,:9], axis=0)
-        out = torch.tensor(out)
+        out = torch.from_numpy(out).float()
         print(out)
         out = out.to(device)
 

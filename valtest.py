@@ -218,7 +218,7 @@ def run(
         mf_yolo.append_param(im, im.nbytes)
         mf_yolo.inference(myout, im.nbytes)
         print(myout)
-        out = myout
+        out = torch.tensor(myout).to(device)
 
         dt[1] += time_sync() - t2
         #import pdb; pdb.set_trace()

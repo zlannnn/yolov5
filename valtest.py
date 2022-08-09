@@ -215,6 +215,8 @@ def run(
         #import pdb; pdb.set_trace()
         im = im.permute(0,2,3,1).contiguous()
         print(im.shape)
+        
+        im = torch.randn(1,640,640,3)
         im = im.numpy().view(dtype=np.uint8)
         print(im.shape)
         mf_yolo.append_param(im, im.nbytes)

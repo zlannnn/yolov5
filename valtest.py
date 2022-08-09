@@ -214,7 +214,7 @@ def run(
         out, train_out = model(im) if training else model(im, augment=augment, val=True)  # inference, loss outputs
 
         im = torch.randn(1,640,640,3)
-        im = im.numpy().view(dtype=np.int8)
+        im = im.numpy().view(dtype=np.uint8)
         mf_yolo.append_param(im, im.nbytes)
         mf_yolo.inference(myout, myout.nbytes)
         print(myout)

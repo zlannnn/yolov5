@@ -217,6 +217,7 @@ def run(
         print(im.shape)
         im = im.numpy()
         im = np.transpose(im,(0,2,3,1))
+        im = np.ascontiguousarray(im, dtype=np.uint8)
         print(im.shape)       
         im = im.view(dtype=np.uint8)
         mf_yolo.append_param(im, im.nbytes)

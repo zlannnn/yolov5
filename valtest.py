@@ -191,6 +191,13 @@ def run(
     jdict, stats, ap, ap_class = [], [], [], []
     callbacks.run('on_val_start')
     pbar = tqdm(dataloader, desc=s, bar_format='{l_bar}{bar:10}{r_bar}{bar:-10b}')  # progress bar
+    
+    yolo_path = '/usr/lib/libmfmodeltesterv2.so'
+    mf_yolo = MFTesterC.MFTesterC(yolo_path)
+    print('load library finished!')
+    yaml_path = '/home/kylin/work/dataset_yolov5/CCSFF_yolov5#N1#640_sparseX16_int8_single_core_fase_b2_mode_false_context1_batch_parallel_false_0/CCSFF_yolov5#N1#640_sparseX16_int8_single_core_fase_b2_mode_false_context1_batch_parallel_false_0_7a6a82d/chip_runtime.yaml'
+    ret = mf_yolo.init(yaml_path.encode('utf-8'), 0)
+    
     for batch_i, (im, targets, paths, shapes) in enumerate(pbar):
         callbacks.run('on_val_batch_start')
         t1 = time_sync()
@@ -202,24 +209,17 @@ def run(
         nb, _, height, width = im.shape  # batch size, channels, height, width
         t2 = time_sync()
         dt[0] += t2 - t1
+        # Inference
+        out, train_out = model(im) if training else model(im, augment=augment, val=True)  # inference, loss outputs
 
-        yolo_path = '/usr/lib/libmfmodeltesterv2.so'
-        mf_yolo = MFTesterC.MFTesterC(yolo_path)
-        print('load library finished!')
-        yaml_path = '/home/kylin/work/dataset_yolov5/CCSFF_yolov5#N1#640_sparseX16_int8_single_core_fase_b2_mode_false_context1_batch_parallel_false_0/CCSFF_yolov5#N1#640_sparseX16_int8_single_core_fase_b2_mode_false_context1_batch_parallel_false_0_7a6a82d/chip_runtime.yaml'
-        ret = mf_yolo.init(yaml_path.encode('utf-8'), 0)
         
         im = im.numpy().view(dtype=np.uint8)
         mf_yolo.append_param(im, im.nbytes)
         myout = mf_yolo.inference(im, im.nbytes)
         print(myout)
-        #import pdb; pdb.set_trace()
 
-        # Inference
-        out, train_out = model(im) if training else model(im, augment=augment, val=True)  # inference, loss outputs
-        import pdb; pdb.set_trace()
         dt[1] += time_sync() - t2
-
+        import pdb; pdb.set_trace()
         # Loss
         if compute_loss:
             loss += compute_loss([x.float() for x in train_out], targets)[1]  # box, obj, cls

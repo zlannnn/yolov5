@@ -213,7 +213,7 @@ def run(
         # Inference
         #out, train_out = model(im) if training else model(im, augment=augment, val=True)  # inference, loss outputs
 
-        #im = im.permute(0,2,3,1)
+        #im = im.permute(0,2,3,1
         print(im.shape)
         im = im.numpy()
         im = np.transpose(im,(0,2,3,1)

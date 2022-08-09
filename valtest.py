@@ -218,6 +218,7 @@ def run(
         mf_yolo.append_param(im, im.nbytes)
         mf_yolo.inference(myout, im.nbytes)
         print(myout)
+        import pdb; pdb.set_trace()
         out = torch.tensor(myout).to(device)
         out = out.squeeze(0)
         out = out.squeeze(0)

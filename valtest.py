@@ -217,7 +217,8 @@ def run(
         
         output_max = 0.996337890625
         quant_scale = 127 / output_max
-        temp = im
+        temp = torch.round(torch.clip(im.float(), -128, 127).float()).int()
+
         temp = temp.permute(0,2,3,1).contiguous()
         print(temp.shape)
         

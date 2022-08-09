@@ -220,7 +220,7 @@ def run(
         im = im.numpy().view(dtype=np.uint8)
         print(im.shape)
         mf_yolo.append_param(im, im.nbytes)
-        mf_yolo.inference(myout, im.nbytes)
+        mf_yolo.inference(myout, myout.nbytes)
         print(myout)
         #import pdb; pdb.set_trace()
         out = torch.tensor(myout)

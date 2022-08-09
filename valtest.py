@@ -211,16 +211,17 @@ def run(
         t2 = time_sync()
         dt[0] += t2 - t1
         # Inference
-        out, train_out = model(im) if training else model(im, augment=augment, val=True)  # inference, loss outputs
+        #out, train_out = model(im) if training else model(im, augment=augment, val=True)  # inference, loss outputs
 
         im = torch.randn(1,640,640,3)
         im = im.numpy().view(dtype=np.uint8)
         mf_yolo.append_param(im, im.nbytes)
         mf_yolo.inference(myout, im.nbytes)
         print(myout)
+        out = myout
 
         dt[1] += time_sync() - t2
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
         # Loss
         if compute_loss:
             loss += compute_loss([x.float() for x in train_out], targets)[1]  # box, obj, cls

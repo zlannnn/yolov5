@@ -2,6 +2,7 @@ import numpy as np
 import torch
 from ctypes import *
 from numpy.ctypeslib import ndpointer
+import yaml
 
 def uint16tofloat32(data):
     data = np.left_shift(data.astype(np.int32), 16).view(np.float32)

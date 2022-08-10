@@ -3,6 +3,26 @@ import torch
 from ctypes import *
 from numpy.ctypeslib import ndpointer
 import yaml
+import tensorflow as tf
+
+def quant_input(img):
+    output_max = 0.996337890625
+    scale = 127 / output_max
+    img = tf.cast(
+        tf.round(
+            tf.cast(
+                tf.clip_by_value(
+                    tf.cast(img, tf.bfloat16) * tf.cast(scale, tf.bfloat16), -128, 127
+                ),
+                tf.float32)
+        ),
+        tf.int8
+    )
+    return img
+
+def uint16tofloat32(data):
+    data = np.left_shift(data.astype(np.int32), 16).view(np.float32)
+    return data
 
 def uint16tofloat32(data):
     data = np.left_shift(data.astype(np.int32), 16).view(np.float32)
@@ -86,12 +106,13 @@ class YoloRuntime(MFTesterC):
         super(YoloRuntime, self).__init__(mfmodeltesterv2_lib_path=mfmodeltesterv2_lib_path)
         
     def preprocess(self, data):
-        data = torch.round(torch.clip(data.float(), -128, 127).float()).int()
+        data = quant_input(data)
         data = data.permute(0,2,3,1).contiguous()
         data = data.numpy().view(dtype=np.uint8)
         return data
 
     def postprocess(self, data):
+        data = data.view(np.uint16).astype(np.float16)
         data = np.expand_dims(data.squeeze()[:,:9], axis=0)
         #data = uint16tofloat32(data)
         data = torch.from_numpy(data)

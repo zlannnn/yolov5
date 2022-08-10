@@ -107,7 +107,7 @@ class YoloRuntime(MFTesterC):
         
     def preprocess(self, data):
         data = quant_input(data)
-        data = data.permute(0,2,3,1).contiguous()
+        data = data.numpy().permute(0,2,3,1).contiguous()
         data = data.numpy().view(dtype=np.uint8)
         return data
 

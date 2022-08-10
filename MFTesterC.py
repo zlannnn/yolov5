@@ -112,7 +112,8 @@ class YoloRuntime(MFTesterC):
         return data
 
     def postprocess(self, data):
-        data = data.view(np.uint16).astype(np.float16)
+        data = np.frombuffer(data, dtype=self.dtype)
+        #data.view(np.uint16).astype(np.float16)
         data = np.expand_dims(data.squeeze()[:,:9], axis=0)
         #data = uint16tofloat32(data)
         data = torch.from_numpy(data)
